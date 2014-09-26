@@ -1,0 +1,74 @@
+﻿
+@{
+    ViewBag.Title = "Scatterplot";
+    Layout = "~/Views/_LayoutGraph.cshtml";
+}
+
+<h2>Scatterplot</h2>
+
+<div id='chart'>
+    <svg style='height:500px'> </svg>
+</div>
+
+<script type="text/javascript">
+
+    var result = { Key: "Data", Values: [] };
+    var data;
+        //console.log(window.location.search.substring(1));
+    //Pie chart example data. Note how there is only a single array of key-value pairs.
+    function logData() {
+
+        d3.json("~/../../odata/Logs?" + window.location.search.substring(1), function (inData) {
+
+            var shapes = ['circle', 'cross', 'triangle-up', 'triangle-down', 'diamond', 'square'];
+
+            data = d3.nest()
+              .key(function (d) { return d.Path; })
+              .rollup(function (d) {
+                  var res = [];
+                  for (var i in d) {
+                      res.push({ x: d[i].Cs_bytes, y: d[i].Sc_bytes, size: d[i].TimeTaken, shape: 'circle' });
+                  }
+                  return res;
+              }).entries(inData.value);
+
+            console.log(data);
+
+
+            nv.addGraph(function () {
+                var chart = nv.models.scatterChart()
+                              .showDistX(true)    //showDist, when true, will display those little distribution lines on the axis.
+                              .showDistY(true)
+                                .tooltips(true)
+                    .tooltipContent(function (key, y, e, graph) { return '<h3>' + key + '</h3>' + '<p>' + y + '</p>' })
+                              .transitionDuration(350)
+                              .color(d3.scale.category10().range());
+
+                //Configure how the tooltip looks.
+                //chart.tooltipContent(function (key) {
+                //    return '<h3>' + key + '</h3>';
+                //});
+
+                //Axis settings
+                //chart.xAxis.tickFormat(d3.format('.02f'));
+                //chart.yAxis.tickFormat(d3.format('.02f'));
+
+                //We want to show shapes other than circles.
+                chart.scatter.onlyCircles(false);
+
+                d3.select('#chart svg')
+                    .datum(data)
+                    .call(chart);
+
+                nv.utils.windowResize(chart.update);
+
+                return chart;
+            });
+        });
+
+    };
+
+    logData();
+
+</script>
+

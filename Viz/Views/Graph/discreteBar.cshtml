@@ -1,0 +1,62 @@
+﻿@{
+    Layout = "~/Views/_LayoutGraph.cshtml";
+}
+
+
+
+    <div id='chart'>
+        <svg style='height:500px'> </svg>
+    </div>
+
+    <script type="text/javascript">
+
+        var result = { key: "Data", values: [] };
+        var resultArray = [result];
+        
+        //function toolTipLog (key, y, e, graph) {
+        //    return '<h3>' + key + '</h3>' +
+        //        '<p>' + e.Sitename + '</p>';
+
+        //}
+
+    //Pie chart example data. Note how there is only a single array of key-value pairs.
+    function logData() {
+
+        d3.json("~/../../odata/Logs?" + window.location.search.substring(1), function (inData) {
+
+            for (var i in inData.value) {
+                    result["values"].push(inData.value[i]);                
+            }
+            console.log(result.values);
+
+            nv.addGraph(function () {
+                var chart = nv.models.discreteBarChart()
+                    .x(function (d) { return d.Datetime })    //Specify the data accessors.
+                    .y(function (d) { return d.TimeTaken })
+                    .staggerLabels(true)    //Too many bars and not enough room? Try staggering labels.
+                    .tooltips(true)        //Don't show tooltips
+                    //.toolTipContent(toolTipLog(key, y, e, graph))
+                    //.tooltipContent(function (key, y, e, graph) {  return '<h3>' + key + '</h3>' + '<p>' + y + '</p>' })
+                    .showValues(true)       //...instead, show the bar value right on top of each bar.
+                    .transitionDuration(350)
+                ;
+
+                d3.select('#chart svg')
+                    .datum(resultArray)
+                    .call(chart);
+
+                nv.utils.windowResize(chart.update);
+
+                return chart;
+            });
+
+        });
+
+    };
+
+
+
+    logData();
+
+    </script>
+
