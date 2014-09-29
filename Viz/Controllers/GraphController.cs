@@ -38,6 +38,11 @@ namespace Viz.Controllers
         public ActionResult Scatterplot()
         {
             return View("Scatterplot");
-        }        
+        }
+
+        public ActionResult MultiBarHorizontal()
+        {
+            return View("MultiBarHorizontal");
+        }
     }
 }

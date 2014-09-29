@@ -179,6 +179,7 @@
     <Content Include="Views\Graph\DiscreteBar.cshtml" />
     <Content Include="Views\Graph\Timeline.cshtml" />
     <Content Include="Views\Graph\Scatterplot.cshtml" />
+    <Content Include="Views\Graph\MultiBarHorizontal.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

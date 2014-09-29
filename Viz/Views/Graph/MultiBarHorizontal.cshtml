@@ -1,0 +1,62 @@
+﻿
+@{
+    ViewBag.Title = "MultiBarHorizontal";
+    Layout = "~/Views/_LayoutGraph.cshtml";
+}
+
+<h2>MultiBarHorizontal</h2>
+
+
+<div id='chart'>
+    <svg style='height:500px'> </svg>
+</div>
+
+<script type="text/javascript">
+
+        var result = { Key: "Data", Values: [] };
+        //console.log(window.location.search.substring(1));
+    //Pie chart example data. Note how there is only a single array of key-value pairs.
+    function logData() {
+
+        d3.json("~/../../odata/Logs?" + window.location.search.substring(1), function (inData) {
+
+            //for (var i in inData.value) {
+            //    result["Values"].push(inData.value[i]);
+            //}
+            var data = d3.nest()
+                .key(function (d) { return d.Sitename; })
+                .key(function (d) { return d.Path; })
+                .rollup(function (d) {
+                    return d3.sum(d, function (g) { return 1; });
+                }).entries(inData.value);
+
+            console.log(data);
+
+            nv.addGraph(function () {
+                var chart = nv.models.multiBarHorizontalChart()
+                    .x(function (d) { return d.key })
+                    .y(function (d) { return d.values })
+                    .margin({ top: 30, right: 20, bottom: 50, left: 175 })
+                    .showValues(true)           //Show bar value next to each bar.
+                    .tooltips(true)             //Show tooltips on hover.
+                    .transitionDuration(350)
+                    .showControls(true);        //Allow user to switch between "Grouped" and "Stacked" mode.
+
+                chart.yAxis
+                    .tickFormat(d3.format(',.2f'));
+
+                d3.select('#chart svg')
+                    .datum(data)
+                    .call(chart);
+
+                nv.utils.windowResize(chart.update);
+
+                return chart;
+            });
+        });
+    };
+
+    logData();
+
+</script>
+
