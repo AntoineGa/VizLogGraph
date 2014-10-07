@@ -28,6 +28,10 @@ namespace Viz
                 "~/Scripts/d3.js", 
                 "~/Scripts/d3-timeline.js", "~/Scripts/nv.d3.js"));
 
+            bundles.Add(new ScriptBundle("~/bundles/dc").Include(
+                                                    "~/Scripts/crossfilter.js",
+                                                    "~/Scripts/dc.js"));
+
             //bundles.Add(new ScriptBundle("~/bundles/todo").Include(
             //    "~/Scripts/app/todo.bindings.js",
             //    "~/Scripts/app/todo.datacontext.js",
