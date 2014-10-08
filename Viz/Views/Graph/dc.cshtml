@@ -8,7 +8,8 @@
 
 
 <h2>dc</h2>
-
+<div id="chart-ring-year"></div>
+<div id="chart-ring-path"></div>
 <div id="chart-line-hitsperday"></div>
 
 <script type="text/javascript">
@@ -37,19 +38,37 @@
 
             var ipDim = ndx.dimension(function (d) { return d.IP; });
             var dateDim = ndx.dimension(function (d) { return d.date; });
+            var pathDim = ndx.dimension(function (d) { return d.Path; });
 
             var hits = dateDim.group().reduceSum(function (d) { return d.TimeTaken; });
+            var ipTime = ipDim.group().reduceSum(function (d) { return d.TimeTaken; });
+            var pathTime = pathDim.group().reduceSum(function (d) { return d.TimeTaken; });
+
             var minDate = dateDim.bottom(1)[0].date;
             var maxDate = dateDim.top(1)[0].date;
 
             var hitslineChart = dc.lineChart("#chart-line-hitsperday");
-
             hitslineChart
-	            //.width(500).height(200)
+	            //.width(5000).height(2000)
+                .brushOn(false)
 	            .dimension(dateDim)
 	            .group(hits)
 	            .x(d3.time.scale().domain([minDate, maxDate]));
  
+            var yearRingChart = dc.pieChart("#chart-ring-year");
+            yearRingChart
+                .width(300).height(300)
+                .dimension(ipDim)
+                .group(ipTime)
+                .innerRadius(30);
+
+            var pathRingChart = dc.pieChart("#chart-ring-path");
+            pathRingChart
+                .width(300).height(300)
+                .dimension(pathDim)
+                .group(pathTime)
+                .innerRadius(30);
+
             dc.renderAll();
 
         });
