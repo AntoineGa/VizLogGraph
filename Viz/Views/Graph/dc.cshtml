@@ -1,0 +1,62 @@
+﻿
+@{
+    ViewBag.Title = "dc";
+    Layout = "~/Views/_LayoutGraph.cshtml";
+    
+}
+
+
+
+<h2>dc</h2>
+
+<div id="chart-line-hitsperday"></div>
+
+<script type="text/javascript">
+
+    var result = { Key: "Data", Values: [] };
+
+    var parseDate = d3.time.format.iso.parse;
+        //console.log(window.location.search.substring(1));
+    //Pie chart example data. Note how there is only a single array of key-value pairs.
+    function logData() {
+
+        d3.json("~/../../odata/Logs?" + window.location.search.substring(1), function (inData) {
+
+
+            //var data = d3.nest()
+            //  .key(function (d) { return d.IP; })
+            //  .rollup(function (d) {
+            //      return d3.sum(d, function (g) { return 1; }
+            //  }).entries(inData.value);
+
+            inData.value.forEach(function(d) {
+                d.date = parseDate(d.Datetime);
+            });
+
+            var ndx = crossfilter(inData.value);
+
+            var ipDim = ndx.dimension(function (d) { return d.IP; });
+            var dateDim = ndx.dimension(function (d) { return d.date; });
+
+            var hits = dateDim.group().reduceSum(function (d) { return d.TimeTaken; });
+            var minDate = dateDim.bottom(1)[0].date;
+            var maxDate = dateDim.top(1)[0].date;
+
+            var hitslineChart = dc.lineChart("#chart-line-hitsperday");
+
+            hitslineChart
+	            //.width(500).height(200)
+	            .dimension(dateDim)
+	            .group(hits)
+	            .x(d3.time.scale().domain([minDate, maxDate]));
+ 
+            dc.renderAll();
+
+        });
+
+    };
+
+    logData();
+
+</script>
+

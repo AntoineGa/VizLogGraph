@@ -44,10 +44,9 @@ namespace Viz
             //            "~/Scripts/modernizr-*"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
-            //    "~/Content/Site.css",
-            //    "~/Content/TodoList.css",
                 "~/Content/nv.d3.css"));
-
+            bundles.Add(new StyleBundle("~/Content/dc").Include(
+                "~/Content/dc.css"));
             //bundles.Add(new StyleBundle("~/Content/themes/base/css").Include(
             //            "~/Content/themes/base/jquery.ui.core.css",
             //            "~/Content/themes/base/jquery.ui.resizable.css",

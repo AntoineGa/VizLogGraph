@@ -133,6 +133,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\dc.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\nv.d3.css">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -186,6 +189,7 @@
     <Content Include="Views\Graph\Timeline.cshtml" />
     <Content Include="Views\Graph\Scatterplot.cshtml" />
     <Content Include="Views\Graph\MultiBarHorizontal.cshtml" />
+    <Content Include="Views\Graph\dc.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -44,5 +44,10 @@ namespace Viz.Controllers
         {
             return View("MultiBarHorizontal");
         }
+
+        public ActionResult DC()
+        {
+            return View("dc");
+        }
     }
 }
