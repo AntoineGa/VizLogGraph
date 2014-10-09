@@ -10,11 +10,16 @@
 <h2>dc</h2>
 <div id="chart-ring-year"></div>
 <div id="chart-ring-path"></div>
+<div id="chart-ring-method"></div>
+<div id="chart-ring-http"></div>
 <div id="chart-line-hitsperday"></div>
+<div id="test"></div>
 
 <script type="text/javascript">
 
     var result = { Key: "Data", Values: [] };
+    var chart = dc.seriesChart("#test");
+    var ndx, runDimension, runGroup;
 
     var parseDate = d3.time.format.iso.parse;
         //console.log(window.location.search.substring(1));
@@ -39,18 +44,24 @@
             var ipDim = ndx.dimension(function (d) { return d.IP; });
             var dateDim = ndx.dimension(function (d) { return d.date; });
             var pathDim = ndx.dimension(function (d) { return d.Path; });
+            var methodDim = ndx.dimension(function (d) { return d.Method; });
+            var httpCodeDim = ndx.dimension(function (d) { return d.HttpCode; });
 
             var hits = dateDim.group().reduceSum(function (d) { return d.TimeTaken; });
             var ipTime = ipDim.group().reduceSum(function (d) { return d.TimeTaken; });
             var pathTime = pathDim.group().reduceSum(function (d) { return d.TimeTaken; });
+            var methodTime = methodDim.group().reduceSum(function (d) { return d.TimeTaken; });
+            var httpCodeTime = httpCodeDim.group().reduceSum(function (d) { return d.TimeTaken; });
 
             var minDate = dateDim.bottom(1)[0].date;
             var maxDate = dateDim.top(1)[0].date;
 
             var hitslineChart = dc.lineChart("#chart-line-hitsperday");
             hitslineChart
-	            //.width(5000).height(2000)
+	            //.width(500).height(300)
                 .brushOn(false)
+                  //.legend(dc.legend().x(50).y(10).itemHeight(13).gap(5))
+                .yAxisLabel("TimeTaken")
 	            .dimension(dateDim)
 	            .group(hits)
 	            .x(d3.time.scale().domain([minDate, maxDate]));
@@ -68,6 +79,52 @@
                 .dimension(pathDim)
                 .group(pathTime)
                 .innerRadius(30);
+
+            var methRingChart = dc.pieChart("#chart-ring-method");
+            methRingChart
+                .width(300).height(300)
+                .dimension(methodDim)
+                .group(methodTime)
+                .innerRadius(30);
+
+            var httpRingChart = dc.pieChart("#chart-ring-http");
+            httpRingChart
+                .width(300).height(300)
+                .dimension(httpCodeDim)
+                .group(httpCodeTime)
+                .innerRadius(30);
+
+            runDimension = ndx.dimension(function (d) { return [+d.Cs_bytes, +d.Path]; });
+            runGroup = runDimension.group().reduceSum(function (d) { return +d.TimeTaken; });
+
+            var symbolScale = d3.scale.ordinal().range(d3.svg.symbolTypes);
+            var symbolAccessor = function (d) { return symbolScale(d.key[0]); };
+            var subChart = function (c) {
+                return dc.scatterPlot(c)
+                    .symbol(symbolAccessor)
+                    .symbolSize(8)
+                    .highlightedSize(10)
+            };
+
+            chart
+              .width(768)
+              .height(480)
+              .chart(subChart)
+              .x(d3.scale.linear().domain([0, 20]))
+              .brushOn(false)
+              .yAxisLabel("Measured Speed km/s")
+              .xAxisLabel("Run")
+              .clipPadding(10)
+              .elasticY(true)
+              .dimension(runDimension)
+              .group(runGroup)
+              .mouseZoomable(true)
+              .seriesAccessor(function (d) { return "Expt: " + d.key[0]; })
+              .keyAccessor(function (d) { return +d.key[1]; })
+              .valueAccessor(function (d) { return +d.value - 500; })
+              .legend(dc.legend().x(350).y(350).itemHeight(13).gap(5).horizontal(1).legendWidth(140).itemWidth(70));
+            chart.yAxis().tickFormat(function (d) { return d3.format(',d')(d + 299500); });
+            chart.margins().left += 40;
 
             dc.renderAll();
 
