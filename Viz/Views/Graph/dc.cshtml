@@ -14,8 +14,15 @@
 <div id="chart-ring-http"></div>
 <div id="chart-line-hitsperday"></div>
 <div id="test"></div>
+<div id="dc-bubble-graph"></div>
+<div id="dc-row-graph"></div>
+
 
 <script type="text/javascript">
+
+    //var bubbleChart = dc.bubbleChart("#dc-bubble-graph");
+    var rowChart = dc.rowChart("#dc-row-graph");
+
 
     var result = { Key: "Data", Values: [] };
     var chart = dc.seriesChart("#test");
@@ -125,6 +132,64 @@
               .legend(dc.legend().x(350).y(350).itemHeight(13).gap(5).horizontal(1).legendWidth(140).itemWidth(70));
             chart.yAxis().tickFormat(function (d) { return d3.format(',d')(d + 299500); });
             chart.margins().left += 40;
+
+
+            //bubbleChart.width(650)
+			//.height(300)
+			//.dimension(pathDim)
+			//.group(pathTime)
+			//.transitionDuration(1500)
+			//.colors(["#a60000", "#ff0000", "#ff4040", "#ff7373", "#67e667", "#39e639", "#00cc00"])
+			//.colorDomain([-12000, 12000])
+
+			////.x(d3.scale.linear().domain([0, 5.5]))
+			////.y(d3.scale.linear().domain([0, 5.5]))
+			////.r(d3.scale.linear().domain([0, 2500]))
+			//.keyAccessor(function (p) {
+			//    return p.value.Path;
+			//})
+			//.valueAccessor(function (p) {
+			//    return p.value.IP;
+			//})
+			//.radiusValueAccessor(function (p) {
+			//    return p.valuei.TimeTaken;
+			//})
+			//.transitionDuration(1500)
+			//.elasticY(true)
+			////.yAxisPadding(1)
+			////.xAxisPadding(1)
+			//.label(function (p) {
+			//    return p.key;
+			//})
+			//.renderLabel(true)
+			////.renderlet(function (chart) {
+			////    rowChart.filter(chart.filter());
+			////})
+		    ////.on("postRedraw", function (chart) {
+		    ////    dc.events.trigger(function () {
+		    ////        rowChart.filter(chart.filter());
+		    ////    });
+		    ////});
+            //;
+
+            rowChart.width(340)
+			.height(450)
+			.dimension(pathDim)
+			.group(pathTime)
+			.renderLabel(true)
+			//.colors(["#a60000", "#ff0000", "#ff4040", "#ff7373", "#67e667", "#39e639", "#00cc00"])
+			//.colorDomain([0, 0])
+		    //.renderlet(function (chart) {
+		    //    bubbleChart.filter(chart.filter());
+		    //})
+		    //.on("filtered", function (chart) {
+		    //    dc.events.trigger(function () {
+		    //        bubbleChart.filter(chart.filter());
+		    //    });
+		    //})
+            ;
+
+
 
             dc.renderAll();
 
